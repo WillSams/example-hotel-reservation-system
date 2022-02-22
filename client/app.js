@@ -41,7 +41,7 @@ const process_requests = async () => {
           .then(async data => await Mutation.createReservation(data))
           .then(data => {
             const room = data.createReservation;
-            console.log(`Hotel X - Reservation request processed:  ${room.RoomId}`);
+            console.log(`Hotel X - Reservation request processed.  Room:  ${room.RoomId}`);
           });
       });
   });
