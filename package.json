@@ -1,5 +1,5 @@
 {
-    "name": "wsams-fortress-code-challenge",
+    "name": "example-hotel-reservation-system",
     "version": "1.0.0",
     "scripts": {
         "dev": "node api/app.js",
