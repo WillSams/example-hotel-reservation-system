@@ -2,7 +2,7 @@ const { gql } = require('@apollo/client/core');
 
 const { queryRequest } = require('./utils');
 
-exports.getAvailableRooms = async (variables = { startDate, endDate, numBeds, allowSmoking }) => {
+exports.getAvailableRooms = (variables = { startDate, endDate, numBeds, allowSmoking }) => {
   const query = gql`query AvailableRooms($startDate: String!, $numBeds: Int!, $allowSmoking: Boolean!, $endDate: String!) {
     availableRooms(startDate: $startDate, numBeds: $numBeds, allowSmoking: $allowSmoking, endDate: $endDate) {
       Id
@@ -14,7 +14,7 @@ exports.getAvailableRooms = async (variables = { startDate, endDate, numBeds, al
     }
   }`;
 
-  return await queryRequest(query, variables).then(data => data?.availableRooms || []);
+  return queryRequest(query, variables).then(data => data?.availableRooms || []);
 };
 
 exports.getReservations = () => {

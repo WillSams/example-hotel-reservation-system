@@ -5,9 +5,9 @@ const { jsonReader, } = require('./utils');
 const Mutation = require('./mutations');
 const Query = require('./queries');
 
-const process_requests = async () => {
+const process_requests = () => {
   let reservationRequests = null;
-  await jsonReader(`${__dirname}/requests.json`, (error, requests) => {
+  jsonReader(`${__dirname}/requests.json`, (error, requests) => {
     try {
       if (error) throw error;
       else reservationRequests = requests;
@@ -38,9 +38,8 @@ const process_requests = async () => {
               };
             };
           })
-          .then(async data => await Mutation.createReservation(data))
-          .then(data => {
-            const room = data.createReservation;
+          .then(data => Mutation.createReservation(data).then(data => data?.createReservation))
+          .then(room => {
             console.log(`Hotel X - Reservation request processed.  Room:  ${room.RoomId}`);
           });
       });

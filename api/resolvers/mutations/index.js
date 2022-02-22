@@ -8,9 +8,11 @@ const createReservation = (root, { input }) => {
     input.checkoutDate,
   ];
 
-  return db().raw(Reservation.create(), [...inserts, input.totalCharge]).then(() => {
-    return db().raw(Reservation.get(), inserts).then(async data => Reservation.schema(data)[0]);
-  });
+  return db().raw(Reservation.create(), [...inserts, input.totalCharge])
+    .then(() => {
+      return db().raw(Reservation.get(), inserts)
+        .then(data => Reservation.schema(data)[0]);
+    });
 };
 
 module.exports = {

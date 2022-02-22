@@ -6,7 +6,7 @@ const port = process.env.API_PORT;
 const app = Hapi.server({ port });
 gqlServer(app);
 
-module.exports = (async () => await app.start().then(() => {
+module.exports = (() => app.start().then(() => {
     console.log(`🚀  Hotel X - GraphQL API ready at localhost:${port}/graphql `);
 }).catch(ex => console.log(ex)))();
 
