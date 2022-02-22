@@ -13,6 +13,15 @@ const process_requests = () => {
       else reservationRequests = requests;
     } catch (ex) { console.log(`Json file read failed: ${ex.message}`); };
   }).then(async () => {
+    // Note:  we can refactor the api to handle bulk inserts and de-couple
+    // the records creation from this promise pool.  However, this scenario would
+    // still need to call the availableRooms GraphQL query O(N). 
+    // TODO:  In future commits, make the current availableRooms GraphQL query 
+    // cacheable by retrieving details from an `AvailableRooms` schema, therefore 
+    // removing the need for passing vars to the query thus making it cacheable.  
+    // Also, future commits will cache the `AvailableRooms` data and keep it 
+    // up to date via Redis pub/sub.  Therefore getting close to O(1) complexity 
+    // and de-couple the need for api round-trips in this scenario. 
     await PromisePool
       .for(reservationRequests)
       .withConcurrency(1)
