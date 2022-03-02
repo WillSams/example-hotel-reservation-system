@@ -10,5 +10,28 @@ services:
       - "${DB_PORT}:5432"
     volumes:
       - hotel-db-data:/var/lib/postgresql/data
+  messaging:
+    image: rabbitmq:3-management-alpine
+    container_name: messaging
+    environment:
+      RABBITMQ_ERLANG_COOKIE: "${MESSAGING_SECRET}"
+      RABBITMQ_DEFAULT_USER: "${MESSAGING_USER}"
+      RABBITMQ_DEFAULT_PASS: "${MESSAGING_PASSWD}"
+      RABBITMQ_DEFAULT_VHOST: "/"
+    ports:
+      - "${MESSAGING_QUEUE_PORT}:5672"
+      - "${MESSAGING_WEB_PORT}:15672"
+    volumes:
+      - hotel-messaging-data:/var/lib/rabbitmq/
+      - hotel-messaging-log:/var/log/rabbitmq
+  cache:
+    image: redis:alpine
+    container_name: cache
+    ports:
+      - "${CACHE_PORT}:6379"
+    command: redis-server --save 20 1 --loglevel warning --requirepass ${CACHE_PASSWORD}
+    restart: always
 volumes:
   hotel-db-data:
+  hotel-messaging-data:
+  hotel-messaging-log:
