@@ -78,7 +78,7 @@ npm run dev
 
 ## Running the script
 
-Execute `npm run process_reservations` to book the reservations listed in `requests.json`.  Each request are processed in the order provided as if they were real-time requests.  The following rules are observed:
+Execute `npm run process_requests` to book the reservations listed in `requests.json`.  Each request are processed in the order provided as if they were real-time requests.  The following rules are observed:
 
 - When a room is reserved, it cannot be reserved by another guest on overlapping dates.
 - Whenever there are multiple available rooms for a request, the room with the lower final price is assigned.
