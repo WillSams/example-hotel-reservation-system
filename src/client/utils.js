@@ -2,7 +2,11 @@ const { readFile } = require('fs');
 
 const fetch = require('cross-fetch');
 
-const { ApolloClient, HttpLink, InMemoryCache, } = require('@apollo/client/core');
+const {
+  ApolloClient,
+  HttpLink,
+  InMemoryCache,
+} = require('@apollo/client/core');
 
 const graphqlClient = new ApolloClient({
   link: new HttpLink({
@@ -19,14 +23,18 @@ const createError = (prefix, message) => {
 };
 
 const queryRequest = (query, variables = {}) =>
-  graphqlClient.query({ query, variables })
-    .then(response => response.data)
-    .catch(response => createError('GraphQL query failed', response.message));
+  graphqlClient
+    .query({ query, variables })
+    .then((response) => response.data)
+    .catch((response) => createError('GraphQL query failed', response.message));
 
 const mutationRequest = (mutation, variables = {}) =>
-  graphqlClient.mutate({ mutation, variables })
-    .then(response => response.data)
-    .catch(response => createError('GraphQL mutation failed', response.message));
+  graphqlClient
+    .mutate({ mutation, variables })
+    .then((response) => response.data)
+    .catch((response) =>
+      createError('GraphQL mutation failed', response.message)
+    );
 
 const jsonReader = (filepath, callback) => {
   return new Promise((resolve, reject) => {
@@ -36,13 +44,19 @@ const jsonReader = (filepath, callback) => {
         const obj = JSON.parse(data);
         callback(null, obj);
         resolve();
-      };
+      }
     });
   });
+};
+
+const seedData = async (knex, tableName, data) => {
+  await knex(tableName).del();
+  return await knex(tableName).insert(data);
 };
 
 module.exports = {
   mutationRequest,
   queryRequest,
   jsonReader,
+  seedData,
 };
