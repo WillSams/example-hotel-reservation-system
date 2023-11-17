@@ -1,0 +1,33 @@
+name: Validate application
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Install Node.js via nvm
+      uses: dcodeIO/setup-node-nvm@master
+      with:
+        node-version: node
+        node-mirror: https://nodejs.org/download/v8-canary/
+
+    - name: Test with Jest
+      run: |
+        npm i
+        npm run test 
+    
+
+
+

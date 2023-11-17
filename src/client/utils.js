@@ -16,25 +16,28 @@ const graphqlClient = new ApolloClient({
   cache: new InMemoryCache(),
 });
 
-const createError = (prefix, message) => {
+const logError = (prefix, message, data) => {
   const errorMsg = `${prefix}:  ${message || ''}`;
   console.log(errorMsg);
-  throw new Error(errorMsg);
 };
 
 const queryRequest = (query, variables = {}) =>
   graphqlClient
     .query({ query, variables })
     .then((response) => response.data)
-    .catch((response) => createError('GraphQL query failed', response.message));
+    .catch((response) => {
+      logError('GraphQL query failed', response.message);
+      return response.data;
+    });
 
 const mutationRequest = (mutation, variables = {}) =>
   graphqlClient
     .mutate({ mutation, variables })
     .then((response) => response.data)
-    .catch((response) =>
-      createError('GraphQL mutation failed', response.message)
-    );
+    .catch((response) => {
+      logError('GraphQL query failed', response.message);
+      return response.data;
+    });
 
 const jsonReader = (filepath, callback) => {
   return new Promise((resolve, reject) => {

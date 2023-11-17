@@ -3,10 +3,10 @@ const moment = require('moment');
 const knex = require('knex');
 const knexfile = require('../../../knexfile');
 
+const env = process.env.NODE_ENV || 'development';
 const defaultDate = moment(new Date()).format('YYYY-MM-DD');
 
-const db = () =>
-  knex(process.env.NODE_ENV === 'test' ? knexfile.test : knexfile.development);
+const db = () => knex(env === 'test' ? knexfile.test : knexfile.development);
 
 const daysBetween = (startDateStr, endDateStr) => {
   const startDate = moment(startDateStr, 'YYYY-MM-DD');
