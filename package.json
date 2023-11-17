@@ -7,7 +7,6 @@
         "prepare": "husky install",
         "process_requests": "node src/client/app.js",
         "refresh": "knex migrate:rollback && knex migrate:latest && knex seed:run",
-        "seed": "knex seed:run",
         "test": "NODE_ENV=test jest"
     },
     "dependencies": {
@@ -29,6 +28,7 @@
         "eslint": "^7.26.0",
         "husky": "^6.0.0",
         "jest": "^29.4.0",
+        "jest-mock": "^29.7.0",
         "prettier": "^2.5.1"
     }
 }

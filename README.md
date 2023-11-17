@@ -2,6 +2,28 @@
 
 Completed as part of a weekend code challenge, simulates booking reservations in a hotel.  Please see the following `Pre-req` section before attempting to process reservations.
 
+**Usage:**
+
+```bash
+# List all existing booked reservations
+curl http://localhost:$API_PORT/graphql \
+    -H 'Content-Type: application/json' \
+    -d '{"query": "query { reservations { RoomId CheckinDate CheckoutDate  } }"}'
+
+# Create a new reservation
+# Note: if there is an overlap, you'll see a 
+#   'Reservation dates overlap with an existing reservation' error message
+# To see the aforementioned error, run this mutation a multiple times
+curl http://localhost:$API_PORT/graphql \
+    -H 'Content-Type: application/json' \
+    -d '{ "query": "mutation { createReservation( input: { roomId: \"91754a14-4885-4200-a052-e4042431ffb8\", checkinDate: \"2020-12-31\", checkoutDate: \"2021a-01-02\", totalCharge: 111 }) { Id RoomId CheckinDate CheckoutDate TotalCharge } }" }'
+
+# List Available Rooms for a given date range
+curl http://localhost:$API_PORT/graphql \
+    -H 'Content-Type: application/json' \
+    -d '{"query": "query { availableRooms( startDate: \"2023-12-31\", endDate: \"2024-01-02\" numBeds: 1, allowSmoking: false) { Id NumBeds AllowSmoking DailyRate CleaningFee } }" }'
+```
+
 ## Pre-requisites
 
 Although Apple Mac links are also provided, the instructions below are more reliable for Debian-based distros (Ubuntu, Linux Mint, etc.) but they can also work under [Windows using the Windows Subsystem for Linux (WSL)](https://docs.microsoft.com/en-us/windows/wsl/about).  The following tools need to be installed:
@@ -9,74 +31,30 @@ Although Apple Mac links are also provided, the instructions below are more reli
 - [Direnv](https://direnv.net) to load environment variables needed for this project.  Simply executing `sudo apt install direnv` in your terminal (command line) should work in most cases.
 - [Docker](https://www.docker.com) to simplify usage of our Postgres SQL RDBMS dependency for development & testing.  If on Debian-based distro, see instructions below if Docker is not already installed.
 - [NodeJS](https://nodejs.org/en/download/).
+- [nvm](https://github.com/nvm-sh/nvm) - Used to manage NodeJS versions.
 
-### Installing Docker
-
-Apple Mac instructions can be found [here](https://docs.docker.com/desktop/mac/install/).  Otherwise on Debian-based distros, in your terminal:
-
-```bash
-suod bash -c "apt update && apt upgrade -y"
-sudo bash -c "add-apt-repository 'deb [arch=amd64] <https://download.docker.com/linux/ubuntu> $RELEASE stable'"
-curl -fsSL <https://download.docker.com/linux/ubuntu/gpg> | sudo apt-key add -
-sudo bash -c "apt update && apt install docker-ce docker-ce-cli containerd.io docker-compose -y"
-sudo bash -c "groupadd docker"
-sudo bash -c "usermod -aG docker $USER"
-newgrp docker
-```
-
-Windows users can refer to [Docker's documentation](https://www.docker.com/docker-desktop/getting-started-for-windows).
-
-### Optional - Installing Node Version Manager (NVM)
-
-If you have the version of Node listed in `.nvmrc` installed via some other method, the following instructions are not necessary.  Apple Mac instructions can be found [here](https://tecadmin.net/install-nvm-macos-with-homebrew).  Otherwise, in your terminal on Debian-based distros or WSL:
-
-```bash
-wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
-echo 'export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"' >> ~/.bashrc
-source ~/.bashrc
-```
-
-### Install Node Packages
+## Install Node Packages
 
 Execute the following within your terminal:
 
 ```bash
- # To eliminate any issues, install/use the version listed in .nvmrc.  
- # If you need to install the listed version of Node, execute `nvm install <version-listed-in-.nvmrc>`
-npm use            
-
-npm i               # Install the packages needed for the project
-npm i -g knex       # Installs Knex globally
+nvm use             # To eliminate any issues, install/use the version listed in .nvmrc. 
+npm i               # install the packages needed for project 
 ```
 
-### Create the database
+## Create the database
 
-Execute the following within your terminal:
-
-```bash
-docker compose up -d
-docker exec -it -u postgres hotel-db bash
-```
-
-Once the container's command prompt loads, execute `psql`.  Subsequenly in the Postgres shell, execute:
+Finally, let's create and seed the databases and our Reservations and Rooms tables:
 
 ```bash
-CREATE DATABASE hotel_development;
-\q   # to quit the psql shell
-
-exit # to exit the container's Bash shell
-```
-
-Finally, let's create/seed our tables and then start the GraphQL API
-
-```bash
-npm run refresh     # this will drop tables, re-create them, and then seed
-npm run dev
+# Create the databases and seed them
+NODE_ENV=development | ./create_db.sh && npm run refresh
+NODE_ENV=test | ./create_db.sh && npm run refresh
 ```
 
 ## Running the script
+
+Start the GraphQL API by running in the background `npm run dev &`.
 
 Execute `npm run process_requests` to book the reservations listed in `requests.json`.  Each request are processed in the order provided as if they were real-time requests.  The following rules are observed:
 
