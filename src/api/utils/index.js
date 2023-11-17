@@ -1,7 +1,7 @@
 const moment = require('moment');
 
 const knex = require('knex');
-const knexfile = require('../../../knexfile');
+const knexfile = require('../../db/knexfile');
 
 const env = process.env.NODE_ENV || 'development';
 const defaultDate = moment(new Date()).format('YYYY-MM-DD');

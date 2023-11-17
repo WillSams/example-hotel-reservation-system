@@ -48,6 +48,7 @@ Finally, let's create and seed the databases and our Reservations and Rooms tabl
 
 ```bash
 # Create the databases and seed them
+cd src/db
 NODE_ENV=development | ./create_db.sh && npm run refresh
 NODE_ENV=test | ./create_db.sh && npm run refresh
 ```
@@ -65,7 +66,7 @@ Execute `npm run process_requests` to book the reservations listed in `requests.
 - Non-smokers are not placed in allowed smoking rooms.
 - Final price for reservations are determined by daily price * num of days requested, plus the cleaning fee.
 
-Verification can be achieved by matching the `answers.json` to the output of the following API request:
+Verification can be achieved by matching the [`answers.json`](./src/answers.json) to the output of the following API request:
 
 ```bash
 curl -X POST \
