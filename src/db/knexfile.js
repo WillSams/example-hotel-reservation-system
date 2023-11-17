@@ -2,7 +2,7 @@ const defaults = {
   client: process.env.DB_CLIENT,
   migrations: {
     directory: './migrations',
-    tableName: 'knex_migrations'
+    tableName: 'knex_migrations',
   },
   pool: { min: 2, max: 10 },
   debug: false,
@@ -22,7 +22,7 @@ module.exports = {
       ...connection,
       database: 'hotel_development',
     },
-    seeds: { directory: './seeds/development', },
+    seeds: { directory: './seeds/development' },
   },
 
   test: {
@@ -31,6 +31,6 @@ module.exports = {
       ...connection,
       database: 'hotel_test',
     },
-    seeds: { directory: './seeds/development', },
+    seeds: { directory: './seeds/development' },
   },
 };

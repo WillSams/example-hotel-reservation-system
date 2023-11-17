@@ -6,7 +6,7 @@
         "lint": "eslint .",
         "prepare": "husky install",
         "process_requests": "node src/client/app.js",
-        "refresh": "knex migrate:rollback && knex migrate:latest && knex seed:run",
+        "refresh": "cd src/db && knex migrate:rollback && knex migrate:latest && knex seed:run",
         "test": "NODE_ENV=test jest"
     },
     "dependencies": {
